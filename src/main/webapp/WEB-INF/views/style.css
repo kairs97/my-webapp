@@ -1,0 +1,38 @@
+/* 기본 스타일 */
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+
+header h1 {
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+}
+
+.message-box {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.message-box h2 {
+    margin: 0;
+    padding: 0;
+}
+
+.message-box p {
+    margin-top: 10px;
+}
+
+.version-info {
+    text-align: center;
+}
