@@ -1,19 +1,16 @@
 pipeline {
     agent any
 
+    environment {
+        TOMCAT_SERVER = '192.168.56.102'
+    }
+
     stages {
         stage('Build') {
             steps {
-                echo 'Building..'
-                sh 'make'
-                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
-                sh 'make check || true'
-                junit '**/target/*.xml'
+                echo 'Building with Maven...'
+                sh 'mvn clean package'
+                archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
             }
         }
         stage('Deploy') {
@@ -23,7 +20,14 @@ pipeline {
                 }
             }
             steps {
-                sh 'make publish'
+                echo 'Deploying to Tomcat...'
+                withCredentials([usernamePassword(credentialsId: 'tomcat-manager', usernameVariable: 'admin', passwordVariable: 'P@ssw0rd')]) {
+                    script {
+                        sh """
+                            curl --upload-file target/*.war "http://${TOMCAT_USER}:${TOMCAT_PASSWORD}@${TOMCAT_SERVER}:8080/manager/text/deploy?path=/yourapp&update=true"
+                        """
+                    }
+                }
             }
         }
     }
