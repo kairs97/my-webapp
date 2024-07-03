@@ -18,7 +18,7 @@
                 ${msg} </p>
         </section>
         <section class="version-info">
-            <h3>현재 버전: 1.1</h3>
+            <h3>현재 버전: 1.0.1</h3>
         </section>
     </main>
     <script src="/js/script.js"></script> </body>
