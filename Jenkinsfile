@@ -1,20 +1,39 @@
 pipeline {
     agent any
+
     stages {
-        stage('Hello') {
+        stage('Build') {
             steps {
-                echo 'Hello World'
+                echo 'Building..'
+                sh 'make'
+                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
         }
-        stage('print "now"') {
-	        steps {
-	            echo "The date is ${new Date().format('yyyy-MM-dd HH:mm:ss')}"
-	        }   
+        stage('Test') {
+            steps {
+                echo 'Testing..'
+                sh 'make check || true'
+                junit '**/target/*.xml'
+            }
+        }
+        stage('Deploy') {
+            when {
+                expression {
+                    currentBuild.result == null || currentBuild.result == 'SUCCESS'
+                }
+            }
+            steps {
+                sh 'make publish'
+            }
         }
     }
+
     post {
-        always {
-            echo 'I will always say Hello again!'
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }
