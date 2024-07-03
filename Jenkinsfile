@@ -21,7 +21,7 @@ pipeline {
             }
             steps {
                 echo 'Deploying to Tomcat...'
-                withCredentials([usernamePassword(credentialsId: 'tomcat-manager', usernameVariable: 'admin', passwordVariable: 'P@ssw0rd')]) {
+                withCredentials([usernamePassword(credentialsId: 'tomcat-manager', usernameVariable: 'TOMCAT_USER', passwordVariable: 'TOMCAT_PASSWORD')]) {
                     script {
                         sh """
                             curl --upload-file target/*.war "http://${TOMCAT_USER}:${TOMCAT_PASSWORD}@${TOMCAT_SERVER}:8080/manager/text/deploy?path=/yourapp&update=true"
