@@ -1,16 +1,32 @@
 pipeline {
     agent any
 
+    triggers {
+        pollSCM('* * * * *')
+    }
+
     environment {
         TOMCAT_SERVER = '192.168.56.102'
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                url: 'https://github.com/kairs97/my-webapp'
+            }
+        }
         stage('Build') {
             steps {
                 echo 'Building with Maven...'
-                sh 'mvn clean package'
+                sh 'mvn clean package -Dmaven.test.skip=true'
                 archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing with Maven...'
+                sh 'mvn test'
             }
         }
         stage('Deploy') {
@@ -21,8 +37,15 @@ pipeline {
             }
             steps {
                 echo 'Deploying to Tomcat...'
-                deployWarEarToContainer container: 'Tomcat Server'
-                war: '**/target/hello-world.war'
+                deploy adapters: [
+                    tomcat9(
+                        credentialsId: 'tomcat-manager',
+                        path: '',
+                        url: 'http://192.168.56.102:8080'
+                        )
+                    ],
+                contextPath: null, 
+                war: 'target/hello-world.war'
             }
         }
     }
