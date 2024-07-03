@@ -51,10 +51,6 @@ pipeline {
     }
 
     post {
-        always {
-            fingerprintArtifacts,
-            archiveArtifacts artifacts: '**/target/hello-world.war'
-        }  
         success {
             echo 'Pipeline succeeded!'
         }
