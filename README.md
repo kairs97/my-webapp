@@ -3,7 +3,7 @@
 ## WAR Packaging
 
 ```bash
-mvn package
+mvn clena package
 ```
 
 ## Deploy WAR Package
