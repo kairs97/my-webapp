@@ -52,7 +52,7 @@ pipeline {
 
     post {
         always {
-            fingerprintArtifacts
+            fingerprintArtifacts,
             archiveArtifacts artifacts: '**/target/hello-world.war'
         }  
         success {
