@@ -44,7 +44,7 @@ pipeline {
                 withDockerRegistry(credentialsId: 'docker-hub-token',
                     url: 'https://index.docker.io/v1/') {
                     sh 'docker image push kairs97/mywebapp:latest'
-                    sh 'docker image push kairs97/mywebapp:$BUILD_BUMBER'
+                    sh 'docker image push kairs97/mywebapp:$BUILD_NUMBER'
                 }
             }
         }
