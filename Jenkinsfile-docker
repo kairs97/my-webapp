@@ -48,7 +48,6 @@ pipeline {
                 }
             }
         }
-        }
         stage('Docker Container Deploy to Docker Out of Docker') {
             agent {
                 docker { image 'docker:dind' }
@@ -56,6 +55,6 @@ pipeline {
             steps {
                 sh 'docker -H tcp://192.168.56.104:2375 container run --detach --name mywebapp -p 80:8080 kairs97/mywebapp:$BUILD_NUMBER'
             }
-        }
+        }    
     }
 }
