@@ -11,7 +11,7 @@ pipeline {
         }
         stage('Maven Build') {
             agent {
-                docker { image 'maven:3-openjdk-17' }
+                docker 'maven:3-openjdk-17'
             }
             steps {
                 sh 'mvn package -DskipTests=true'
@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Maven Test') {
             agent {
-                docker { image 'maven:3-openjdk-17' }
+                docker 'maven:3-openjdk-17'
             }
             steps {
                 sh 'mvn test'
