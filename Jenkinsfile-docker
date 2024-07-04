@@ -1,54 +1,60 @@
 pipeline {
     agent none
+
     stages {
-        stage('Checkout') {
+        stage('Git Checkout') {
             agent any
             steps {
-                git branch: 'main', url: '<URL>'
+                git branch: 'main',
+                url: 'https://github.com/kairs97/my-webapp'
             }
         }
-        stage('Build') {
+        stage('Maven Build') {
             agent {
-                docker { image 'maven:3-openjdk-11' }
+                docker { image 'maven:3-openjdk-17' }
             }
             steps {
-                sh 'mvn clean package -DskipTests=true'
+                sh 'mvn package -DskipTests=true'
             }
         }
-        stage('Test') {
+        stage('Maven Test') {
             agent {
-                docker { image 'maven:3-openjdk-11' }
+                docker { image 'maven:3-openjdk-17' }
             }
             steps {
                 sh 'mvn test'
             }
         }
-        stage('Build Docker Image') {
+        stage('Build a Docker Image') {
             agent any
             steps {
-                sh '<COMMAND>'
+                sh 'docker image build -t mywebapp .'
             }
         }
-        stage('Tag Docker Image') {
+        stage('Tag a Docker Image') {
             agent any
             steps {
-                sh '<COMMAND>'
-            }
+                sh 'docker image tag mywebapp kairs97/mywebapp:latest'
+                sh 'docker image tag mywebapp kairs97/mywebapp:$BUILD_NUMBER'
+            }   
         }
-        stage('Publish Docker Image') {
+        stage('Docker Image Push to Docker Hub') {
             agent any
             steps {
-                withDockerRegistry(credentialsId: 'docker-hub-token', url:'https://index.docker.io/v1/') {
-                    sh '<COMMAND>'
+                withDockerRegistry(credentialsId: 'docker-hub-token',
+                    url: 'https://index.docker.io/v1/') {
+                    sh 'docker image push kairs97/mywebapp:latest'
+                    sh 'docker image push kairs97/mywebapp:$BUILD_BUMBER'
                 }
             }
         }
-        stage('Run Docker Container') {
+        }
+        stage('Docker Container Deploy to Docker Out of Docker') {
             agent {
                 docker { image 'docker:dind' }
             }
             steps {
-                sh 'docker -H tcp://<DOCKER_HOST_PRIVATE_IP>:2375 container run --detach --name <CONTAINER_NAME> -p 80:8080 <IMAGE>:$BUILD_NUMBER'
+                sh 'docker -H tcp://192.168.56.104:2375 container run --detach --name mywebapp -p 80:8080 kairs97/mywebapp:$BUILD_NUMBER'
             }
         }
     }
