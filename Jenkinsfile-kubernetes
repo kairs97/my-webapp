@@ -12,6 +12,10 @@ spec:
       - sleep
       args:
       - infinity
+    - name: git
+      image: alpine/git
+      command: [ 'sleep' ]
+      args: [ 'infinity' ]
     - name: kaniko
       image: gcr.io/kaniko-project/executor:debug
       command:
