@@ -35,7 +35,7 @@ spec:
         stage('Checkout') {
             steps {
                 container('maven') {
-                    git branch: 'main', url: '<URL>'
+                    git branch: 'main', url: 'https://github.com/kairs97/my-webapp'
                 }
             }
         }
