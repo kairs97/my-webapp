@@ -62,7 +62,7 @@ spec:
         }
         stage('Update K8s Manifests & Push') {
             environment {
-                githubUser = 'oms'
+                githubUser = 'kairs97'
                 githubEmail = 'kairs294702@gmail.com'
                 githubId = 'kairs97'
                 githubRepo = 'myresource'
