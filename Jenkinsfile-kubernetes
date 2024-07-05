@@ -60,30 +60,30 @@ spec:
                 }
             }
         }
-    stage('Update K8s Manifests & Push') {
-      environment {
-        githubUser = 'oms'
-        githubEmail = 'kairs294702@gmail.com'
-        githubId = 'kairs97'
-        githubRepo = 'myresource'
-        githubURL = "https://github.com/${githubId}/${githubRepo}.git"
-        dockerhubId = 'kairs97'
-        dockerhubRepo = 'mywebapp'
-      }
-      steps {
-        container('git') {
-          git branch: 'main', credentialsId: 'github-credential', url: "${githubURL}"
-          sh "git config --global --add safe.directory ${workspace}"
-          sh "git config --global user.name ${githubUser}"
-          sh "git config --global user.email ${githubEmail}"
-          sh 'sed -i "s/image:.*/image:${dockerhubId}\\/${dockerhubRepo}:${BUILD_NUMBER}/g" deployment.yaml'
-          sh 'git add deployment.yaml'
-          sh 'git commit -m "Jenkins Build Number - ${BUILD_NUMBER}"'
-          withCredentials([gitUsernamePassword(credentialsId: 'github-credential', gitToolName: 'Default')]) {
-            sh 'git push --set-upstream origin main'
-          }
+        stage('Update K8s Manifests & Push') {
+            environment {
+                githubUser = 'oms'
+                githubEmail = 'kairs294702@gmail.com'
+                githubId = 'kairs97'
+                githubRepo = 'myresource'
+                githubURL = "https://github.com/${githubId}/${githubRepo}.git"
+                dockerhubId = 'kairs97'
+                dockerhubRepo = 'mywebapp'
+            }
+            steps {
+                container('git') {
+                    git branch: 'main', credentialsId: 'github-credential', url: "${githubURL}"
+                    sh "git config --global --add safe.directory ${workspace}"
+                    sh "git config --global user.name ${githubUser}"
+                    sh "git config --global user.email ${githubEmail}"
+                    sh 'sed -i "s/image:.*/image:${dockerhubId}\\/${dockerhubRepo}:${BUILD_NUMBER}/g" deployment.yaml'
+                    sh 'git add deployment.yaml'
+                    sh 'git commit -m "Jenkins Build Number - ${BUILD_NUMBER}"'
+                    withCredentials([gitUsernamePassword(credentialsId: 'github-credential', gitToolName: 'Default')]) {
+                        sh 'git push --set-upstream origin main'
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }
